@@ -1,0 +1,25 @@
+- hosts: localhost
+  gather_facts: no
+  vars:
+    - myname: "{{t_ip}}"
+      private: no
+  tasks:
+    - add_host:
+        name: "{{t_ip}}"
+        groups: dynamically_created_hosts
+    
+- hosts: dynamically_created_hosts
+  tasks:
+    - package:
+       name: 'httpd'
+       state: 'present'
+    - copy:
+       content: "THIS IS ANSIBLE CREATED SITE \n"
+       dest: /var/www/html/index.html
+    - service:
+       name: 'httpd'
+       state: 'started'
+    - firewalld:
+       state: disabled
+       immediate: yes
+       permanent: yes
